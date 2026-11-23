@@ -1,0 +1,1731 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Engineering Benches – Four Browser Engineering Tools</title>
+  <meta name="description" content="Explore four browser-based engineering workbenches for structural analysis, process calculations, control systems, and electrical circuits." />
+  <link rel="canonical" href="https://nirmalya-panigrahi.github.io/Engineering-Benches/" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+
+  <!-- OpenGraph & Twitter Cards -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Engineering Benches" />
+  <meta property="og:title" content="Engineering Benches – Four Browser Engineering Tools" />
+  <meta property="og:description" content="Explore four browser-based engineering workbenches for structural analysis, process calculations, control systems, and electrical circuits." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Engineering Benches – Four Browser Engineering Tools" />
+  <meta name="twitter:description" content="Explore four browser-based engineering workbenches for structural analysis, process calculations, control systems, and electrical circuits." />
+
+  <!-- Structured Data: ItemList -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Engineering Benches",
+    "description": "Four browser-based engineering workbenches for structural analysis, process calculations, control systems, and electrical circuits.",
+    "numberOfItems": 4,
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Structural Engineering Bench",
+        "description": "Structural engineering analysis workbench.",
+        "url": "https://nirmalya-panigrahi.github.io/Structural-Engineering-Bench/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Process Engineering Bench",
+        "description": "Process engineering calculation workbench.",
+        "url": "https://nirmalya-panigrahi.github.io/Process-Engineering-Bench/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Control Engg Bench",
+        "description": "Control systems engineering workbench.",
+        "url": "https://nirmalya-panigrahi.github.io/Control-Engg-Bench/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": "Circuit Bench Lab",
+        "description": "Electronic and electrical circuit lab.",
+        "url": "https://nirmalya-panigrahi.github.io/Circuit-Bench-Lab/"
+      }
+    ]
+  }
+  </script>
+
+  <!-- Fonts: IM Fell English, EB Garamond, Reenie Beanie -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IM+Fell+English:ital@0;1&family=Reenie+Beanie&display=swap" rel="stylesheet" />
+
+  <!-- Prevent theme flash before first paint -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('benches-theme');
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (saved === 'dark' || (!saved && prefersDark)) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+
+  <style>
+    /* =====================================================================
+       Design Tokens: Aged Parchment & Graphite Folio (Light / Lamplit Dark)
+       Zero gradients, zero glossy surfaces, strict 8px spatial rhythm.
+       ===================================================================== */
+    :root {
+      --bg-table: #D9CBAE;
+      --bg-paper: #F1E8D4;
+      --bg-paper-inset: #EAE0C8;
+      --ink-graphite: #3B3A38;
+      --ink-grey: #5C5A55;        /* 5.65:1 on #F1E8D4 (WCAG AA pass) */
+      --ink-line: #6F6D68;        /* Decorative pencil lines & rules */
+      --ink-sepia: #8A5A2B;       /* 4.82:1 on #F1E8D4 */
+      --wash-prussian: #C9D5DC;
+      --accent-blue: #1F4E79;     /* 7.11:1 on #F1E8D4 — primary interactive color */
+      --accent-blue-hover: #173B5C;
+      --accent-blue-ink: #F1E8D4;
+      --accent-red: #B5543C;      /* Decorative drawing markers & callouts only */
+      --accent-red-ink: #9E442F;  /* 5.05:1 for legible small annotations */
+      --accent-ochre: rgba(217, 164, 65, 0.42);
+      --tape-fill: rgba(214, 198, 162, 0.78);
+      --tape-edge: rgba(138, 90, 43, 0.28);
+      --border-hairline: rgba(59, 58, 56, 0.24);
+      --border-strong: rgba(59, 58, 56, 0.48);
+      --shadow-paper: 0 4px 14px rgba(59, 58, 56, 0.14), 0 1px 3px rgba(59, 58, 56, 0.10);
+      --shadow-paper-hover: 0 14px 30px rgba(59, 58, 56, 0.22), 0 4px 10px rgba(59, 58, 56, 0.14);
+      --grain-opacity: 0.045;
+
+      --font-display: 'IM Fell English', Georgia, serif;
+      --font-body: 'EB Garamond', Georgia, serif;
+      --font-note: 'Reenie Beanie', cursive;
+    }
+
+    html[data-theme="dark"] {
+      --bg-table: #1A1611;
+      --bg-paper: #26211A;
+      --bg-paper-inset: #211C16;
+      --ink-graphite: #D8D2C4;    /* 10.57:1 on #26211A */
+      --ink-grey: #B2AA9B;        /* 6.79:1 on #26211A */
+      --ink-line: #9D9586;
+      --ink-sepia: #C99C6E;       /* 6.1:1 on #26211A */
+      --wash-prussian: rgba(127, 176, 219, 0.13);
+      --accent-blue: #7FB0DB;     /* 6.95:1 on #26211A */
+      --accent-blue-hover: #9BC3E6;
+      --accent-blue-ink: #1A1611; /* 7.75:1 on #7FB0DB */
+      --accent-red: #DF7E66;
+      --accent-red-ink: #E58C75;  /* 6.1:1 on #26211A */
+      --accent-ochre: rgba(217, 164, 65, 0.28);
+      --tape-fill: rgba(132, 114, 84, 0.44);
+      --tape-edge: rgba(216, 210, 196, 0.22);
+      --border-hairline: rgba(216, 210, 196, 0.22);
+      --border-strong: rgba(216, 210, 196, 0.42);
+      --shadow-paper: 0 6px 18px rgba(0, 0, 0, 0.42), 0 1px 4px rgba(0, 0, 0, 0.35);
+      --shadow-paper-hover: 0 16px 34px rgba(0, 0, 0, 0.58), 0 4px 12px rgba(0, 0, 0, 0.44);
+      --grain-opacity: 0.035;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-table);
+      color: var(--ink-graphite);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-color: var(--bg-table);
+      color: var(--ink-graphite);
+      font-family: var(--font-body);
+      font-size: 18px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Fixed subtle paper grain overlay (SVG feTurbulence) */
+    .paper-grain {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 90;
+      opacity: var(--grain-opacity);
+    }
+
+    /* Skip link for keyboard navigation */
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: 8px;
+      z-index: 200;
+      padding: 10px 18px;
+      background-color: var(--accent-blue);
+      color: var(--accent-blue-ink);
+      font-family: var(--font-body);
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 2px solid var(--bg-paper);
+    }
+
+    .skip-link:focus {
+      left: 16px;
+      outline: 3px solid var(--accent-blue);
+      outline-offset: 2px;
+    }
+
+    /* Visible drafting-blue keyboard focus ring everywhere */
+    a:focus-visible,
+    button:focus-visible {
+      outline: 2px solid var(--accent-blue);
+      outline-offset: 3px;
+    }
+
+    /* Main drafting table container (8px grid) */
+    .drafting-table {
+      max-width: 1152px;
+      margin: 0 auto;
+      padding: 24px 24px 64px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* =====================================================================
+       1. Top Strip — Drawing Title Block
+       ===================================================================== */
+    .title-block-bar {
+      background-color: var(--bg-paper);
+      border: 1px solid var(--border-strong);
+      box-shadow: var(--shadow-paper);
+      margin-bottom: 32px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: stretch;
+    }
+
+    .tb-cell {
+      padding: 8px 16px;
+      border-right: 1px solid var(--border-hairline);
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+    }
+
+    .tb-sheet {
+      font-variant-numeric: tabular-nums;
+      font-size: 15px;
+      color: var(--ink-grey);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .tb-brand {
+      font-family: var(--font-display);
+      font-size: 19px;
+      color: var(--ink-graphite);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .tb-nav {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px 20px;
+      padding: 6px 16px;
+      flex: 1 1 auto;
+      border-right: 1px solid var(--border-hairline);
+      min-height: 44px;
+    }
+
+    .tb-nav a {
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-size: 17px;
+      line-height: 1.3;
+      padding: 6px 2px;
+      white-space: nowrap;
+      border-bottom: 1.5px solid transparent;
+      transition: border-color 160ms ease, color 160ms ease;
+    }
+
+    .tb-nav a:hover {
+      border-bottom-color: var(--accent-blue);
+    }
+
+    .tb-nav a[aria-current="page"] {
+      color: var(--accent-blue);
+      font-weight: 600;
+      border-bottom: 2px solid var(--accent-blue);
+    }
+
+    .tb-theme-cell {
+      padding: 4px 12px;
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+    }
+
+    .theme-toggle {
+      appearance: none;
+      background-color: transparent;
+      color: var(--accent-blue);
+      border: 1px solid var(--border-hairline);
+      padding: 6px 12px;
+      min-height: 36px;
+      font-family: var(--font-body);
+      font-size: 15px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: background-color 160ms ease, border-color 160ms ease;
+    }
+
+    .theme-toggle:hover {
+      background-color: var(--bg-paper-inset);
+      border-color: var(--accent-blue);
+    }
+
+    /* =====================================================================
+       2. Folio Sheet (Hero + Index of Plates)
+       ===================================================================== */
+    .folio-sheet {
+      background-color: var(--bg-paper);
+      border: 1px solid var(--border-strong);
+      box-shadow: var(--shadow-paper);
+      padding: 12px;
+      margin-bottom: 48px;
+      position: relative;
+    }
+
+    .folio-inner-frame {
+      border: 1px solid var(--border-hairline);
+      padding: 36px 44px 40px;
+      position: relative;
+    }
+
+    /* Corner registration ticks */
+    .folio-inner-frame::before,
+    .folio-inner-frame::after {
+      content: "";
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-color: var(--ink-line);
+      pointer-events: none;
+    }
+
+    .folio-inner-frame::before {
+      top: 8px;
+      left: 8px;
+      border-top: 1px solid var(--ink-line);
+      border-left: 1px solid var(--ink-line);
+    }
+
+    .folio-inner-frame::after {
+      bottom: 8px;
+      right: 8px;
+      border-bottom: 1px solid var(--ink-line);
+      border-right: 1px solid var(--ink-line);
+    }
+
+    /* Hero Layout: clean text area + right/margin drafting instruments */
+    .hero {
+      display: grid;
+      grid-template-columns: 36px minmax(0, 1fr) 260px;
+      gap: 24px;
+      align-items: center;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .hero-ruler-margin {
+      align-self: stretch;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .hero-ruler-svg {
+      width: 32px;
+      height: 100%;
+      max-height: 220px;
+      display: block;
+    }
+
+    .hero-copy {
+      max-width: 64ch;
+    }
+
+    .hero-kicker {
+      margin: 0 0 8px;
+      font-size: 16px;
+      color: var(--ink-sepia);
+      letter-spacing: 0.02em;
+    }
+
+    h1 {
+      margin: 0 0 16px;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(2rem, 3.6vw, 2.85rem);
+      line-height: 1.16;
+      color: var(--ink-graphite);
+      text-wrap: balance;
+    }
+
+    /* Thin ochre highlighter stroke behind the H1 keyword */
+    .ochre-keyword {
+      position: relative;
+      display: inline-block;
+      z-index: 1;
+    }
+
+    .ochre-keyword::after {
+      content: "";
+      position: absolute;
+      left: -3px;
+      right: -3px;
+      bottom: 4px;
+      height: 10px;
+      background-color: var(--accent-ochre);
+      z-index: -1;
+      transform: rotate(-0.6deg);
+    }
+
+    .hero-intro {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.65;
+      color: var(--ink-grey);
+      max-width: 58ch;
+    }
+
+    .hero-instruments {
+      pointer-events: none;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .hero-instruments svg {
+      width: 100%;
+      max-width: 260px;
+      height: auto;
+      display: block;
+    }
+
+    /* =====================================================================
+       3. Index of Plates
+       ===================================================================== */
+    .plate-index {
+      padding-top: 28px;
+    }
+
+    .index-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .index-header h2 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 24px;
+      color: var(--ink-graphite);
+    }
+
+    .index-caption {
+      font-size: 15px;
+      color: var(--ink-grey);
+    }
+
+    .index-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .index-list li + li {
+      border-top: 1px solid rgba(59, 58, 56, 0.08);
+    }
+
+    html[data-theme="dark"] .index-list li + li {
+      border-top-color: rgba(216, 210, 196, 0.08);
+    }
+
+    .index-row {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      min-height: 48px;
+      padding: 10px 8px;
+      text-decoration: none;
+      color: var(--ink-graphite);
+      position: relative;
+      z-index: 1;
+      transition: transform 160ms ease;
+    }
+
+    /* Thin ochre highlighter stroke behind hovered/focused index row */
+    .index-row::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 8px;
+      height: 11px;
+      background-color: var(--accent-ochre);
+      opacity: 0;
+      z-index: -1;
+      transition: opacity 160ms ease;
+    }
+
+    .index-row:hover::before,
+    .index-row:focus-visible::before {
+      opacity: 1;
+    }
+
+    .index-num {
+      font-family: var(--font-display);
+      font-size: 19px;
+      color: var(--accent-blue);
+      min-width: 34px;
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
+
+    .index-name {
+      font-family: var(--font-display);
+      font-size: 20px;
+      color: var(--accent-blue);
+      flex-shrink: 0;
+      border-bottom: 1px solid transparent;
+      transition: border-color 160ms ease;
+    }
+
+    .index-row:hover .index-name,
+    .index-row:focus-visible .index-name {
+      border-bottom-color: var(--accent-blue);
+    }
+
+    .index-desc {
+      font-size: 17px;
+      color: var(--ink-grey);
+      flex-shrink: 1;
+    }
+
+    .index-leaders {
+      flex: 1 1 32px;
+      min-width: 16px;
+      border-bottom: 1.5px dotted var(--ink-line);
+      align-self: baseline;
+      transform: translateY(-4px);
+    }
+
+    .index-plate-ref {
+      font-size: 16px;
+      color: var(--accent-blue);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* =====================================================================
+       4. Four Plates — 2x2 Grid on Desktop
+       ===================================================================== */
+    .plates-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 40px;
+      align-items: stretch;
+    }
+
+    .plate {
+      position: relative;
+      background-color: var(--bg-paper);
+      border: 1px solid var(--border-strong);
+      box-shadow: var(--shadow-paper);
+      padding: 24px 24px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+                  box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Subtle rotation <= 1 degree on desktop */
+    .plate--1 { transform: rotate(-0.75deg); }
+    .plate--2 { transform: rotate(0.65deg); }
+    .plate--3 { transform: rotate(0.55deg); }
+    .plate--4 { transform: rotate(-0.8deg); }
+
+    .plate:hover,
+    .plate:focus-within {
+      transform: translateY(-4px) rotate(0deg);
+      box-shadow: var(--shadow-paper-hover);
+      z-index: 5;
+    }
+
+    /* Corner drafting tape (Plates I & IV) */
+    .corner-tape {
+      position: absolute;
+      width: 56px;
+      height: 18px;
+      background-color: var(--tape-fill);
+      border-top: 1px solid var(--tape-edge);
+      border-bottom: 1px solid var(--tape-edge);
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .corner-tape--tl {
+      top: -6px;
+      left: -14px;
+      transform: rotate(-34deg);
+    }
+
+    .corner-tape--tr {
+      top: -6px;
+      right: -14px;
+      transform: rotate(34deg);
+    }
+
+    /* Drawn brass drafting pin (Plates II & III) */
+    .drawn-pin {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 24px;
+      height: 24px;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    /* Plate Illustration Area */
+    .plate-figure {
+      margin: 0 0 20px;
+      border: 1px solid var(--border-hairline);
+      background-color: var(--bg-paper);
+      padding: 8px;
+      position: relative;
+    }
+
+    .plate-svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 460 / 268;
+    }
+
+    /* Plate Title Block at bottom */
+    .plate-title-block {
+      border: 1px solid var(--border-strong);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-template-rows: auto auto;
+    }
+
+    .ptb-meta {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--border-hairline);
+      background-color: var(--bg-paper-inset);
+    }
+
+    .ptb-plate-num {
+      font-family: var(--font-display);
+      font-size: 16px;
+      color: var(--accent-blue);
+      white-space: nowrap;
+    }
+
+    .ptb-scale {
+      font-size: 14px;
+      color: var(--ink-grey);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .ptb-body {
+      padding: 12px 14px;
+      border-right: 1px solid var(--border-hairline);
+    }
+
+    .ptb-title {
+      margin: 0 0 4px;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 22px;
+      line-height: 1.25;
+      color: var(--ink-graphite);
+    }
+
+    .ptb-desc {
+      margin: 0;
+      font-size: 17.5px;
+      line-height: 1.45;
+      color: var(--ink-grey);
+      max-width: 44ch;
+    }
+
+    .ptb-action {
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Primary button: solid drafting blue with parchment ink, min 44px tall */
+    .btn-bench {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 10px 18px;
+      background-color: var(--accent-blue);
+      color: var(--accent-blue-ink);
+      font-family: var(--font-body);
+      font-size: 17px;
+      font-weight: 600;
+      text-decoration: none;
+      white-space: nowrap;
+      border: 1px solid var(--accent-blue);
+      transition: background-color 150ms ease, border-color 150ms ease;
+    }
+
+    /* Make entire plate clickable via stretched pseudo-element */
+    .btn-bench::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+    }
+
+    .btn-bench:hover {
+      background-color: var(--accent-blue-hover);
+      border-color: var(--accent-blue-hover);
+    }
+
+    /* =====================================================================
+       5. SVG Drawing Aesthetics & Mechanical Pencil Reveal Animations
+       ===================================================================== */
+    .svg-wash {
+      fill: var(--wash-prussian);
+    }
+
+    .svg-line {
+      fill: none;
+      stroke: var(--ink-graphite);
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .svg-line--muted {
+      fill: none;
+      stroke: var(--ink-line);
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .svg-construction {
+      fill: none;
+      stroke: var(--ink-line);
+      stroke-width: 0.75;
+      stroke-dasharray: 4 3;
+      opacity: 0.72;
+    }
+
+    .svg-hatch-stroke {
+      fill: none;
+      stroke: var(--ink-line);
+      stroke-width: 0.75;
+      opacity: 0.75;
+    }
+
+    .svg-red {
+      fill: none;
+      stroke: var(--accent-red);
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .svg-red-fill {
+      fill: var(--accent-red);
+    }
+
+    .svg-red-text {
+      fill: var(--accent-red-ink);
+      font-family: var(--font-note);
+      font-size: 16px;
+    }
+
+    .svg-note-text {
+      fill: var(--ink-sepia);
+      font-family: var(--font-note);
+      font-size: 16px;
+    }
+
+    .svg-dim-text {
+      fill: var(--ink-grey);
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-style: italic;
+    }
+
+    /* Hover/Focus bonus red-pencil annotation (non-essential bonus only) */
+    .hover-note {
+      opacity: 0;
+      transition: opacity 200ms ease;
+    }
+
+    .plate:hover .hover-note,
+    .plate:focus-within .hover-note {
+      opacity: 1;
+    }
+
+    /* Drawing sequence: outlines (0-0.85s) -> hatching (0.55-0.95s) -> notes (0.85-1.25s) */
+    .draw-line {
+      stroke-dasharray: var(--len, 320);
+      stroke-dashoffset: var(--len, 320);
+      transition: stroke-dashoffset 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+
+    .is-drawn .draw-line {
+      stroke-dashoffset: 0;
+    }
+
+    .layer-hatching {
+      opacity: 0;
+      transition: opacity 0.4s ease 0.52s;
+    }
+
+    .is-drawn .layer-hatching {
+      opacity: 1;
+    }
+
+    .layer-notes {
+      opacity: 0;
+      transition: opacity 0.35s ease 0.86s;
+    }
+
+    .is-drawn .layer-notes {
+      opacity: 1;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .plate,
+      .draw-line,
+      .layer-hatching,
+      .layer-notes,
+      .hover-note,
+      .index-row::before {
+        transition: none !important;
+      }
+
+      .draw-line {
+        stroke-dashoffset: 0 !important;
+      }
+
+      .layer-hatching,
+      .layer-notes {
+        opacity: 1 !important;
+      }
+
+      .plate:hover,
+      .plate:focus-within {
+        transform: rotate(0deg);
+      }
+    }
+
+    /* =====================================================================
+       6. Footer
+       ===================================================================== */
+    .folio-footer {
+      margin-top: 56px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-strong);
+      text-align: center;
+      font-size: 17px;
+      color: var(--ink-grey);
+    }
+
+    .folio-footer a {
+      color: var(--accent-blue);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      padding: 6px 4px;
+      display: inline-block;
+    }
+
+    .folio-footer a:hover {
+      color: var(--accent-blue-hover);
+    }
+
+    /* =====================================================================
+       7. Responsive Adaptations (< 800px & Narrow Mobile)
+       ===================================================================== */
+    @media (max-width: 960px) {
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .hero-ruler-margin {
+        display: none;
+      }
+
+      .hero-instruments {
+        justify-content: flex-start;
+      }
+
+      .hero-instruments svg {
+        max-width: 220px;
+      }
+    }
+
+    @media (max-width: 799px) {
+      .drafting-table {
+        padding: 16px 16px 48px;
+      }
+
+      .folio-inner-frame {
+        padding: 24px 20px 28px;
+      }
+
+      .tb-cell {
+        border-right: none;
+        border-bottom: 1px solid var(--border-hairline);
+      }
+
+      .tb-nav {
+        flex-basis: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border-hairline);
+        gap: 4px 16px;
+      }
+
+      .tb-theme-cell {
+        margin-left: 0;
+        padding: 6px 12px;
+      }
+
+      .index-row {
+        flex-wrap: wrap;
+        gap: 4px 10px;
+        padding: 12px 6px;
+      }
+
+      .index-desc {
+        flex-basis: 100%;
+        padding-left: 44px;
+        font-size: 16px;
+      }
+
+      .index-leaders {
+        display: none;
+      }
+
+      .index-plate-ref {
+        margin-left: auto;
+      }
+
+      .plates-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      /* Straighten plates under 800px */
+      .plate--1,
+      .plate--2,
+      .plate--3,
+      .plate--4 {
+        transform: none;
+      }
+
+      .plate:hover,
+      .plate:focus-within {
+        transform: translateY(-2px);
+      }
+
+      .plate-title-block {
+        grid-template-columns: 1fr;
+      }
+
+      .ptb-body {
+        border-right: none;
+        border-bottom: 1px solid var(--border-hairline);
+      }
+
+      .ptb-action {
+        justify-content: stretch;
+      }
+
+      .btn-bench {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to plates and index</a>
+
+  <!-- Shared SVG Filters & Hatch Patterns (decorative only) -->
+  <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
+    <defs>
+      <!-- Rough graphite pencil displacement filter — applied ONLY to drawing artwork -->
+      <filter id="graphite-rough" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="3" seed="7" result="noise" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.4" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+
+      <!-- Paper grain turbulence filter -->
+      <filter id="paper-grain-filter" x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.78" numOctaves="4" stitchTiles="stitch" result="grain" />
+        <feColorMatrix type="saturate" values="0" />
+      </filter>
+
+      <!-- 45-degree pencil hatch -->
+      <pattern id="hatch-45" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(42)">
+        <line x1="0" y1="0" x2="0" y2="7" stroke="currentColor" stroke-width="0.7" stroke-opacity="0.32" />
+      </pattern>
+
+      <!-- Cross-hatch shadow -->
+      <pattern id="hatch-cross" width="7" height="7" patternUnits="userSpaceOnUse">
+        <path d="M0,7 L7,0 M-1,1 L1,-1 M6,8 L8,6" stroke="currentColor" stroke-width="0.65" stroke-opacity="0.28" />
+        <path d="M0,0 L7,7" stroke="currentColor" stroke-width="0.55" stroke-opacity="0.22" />
+      </pattern>
+
+      <!-- Stippled shadow -->
+      <pattern id="stipple-dots" width="8" height="8" patternUnits="userSpaceOnUse">
+        <circle cx="2" cy="2" r="0.65" fill="currentColor" fill-opacity="0.34" />
+        <circle cx="6" cy="5.5" r="0.55" fill="currentColor" fill-opacity="0.26" />
+      </pattern>
+
+      <!-- Arrowhead markers -->
+      <marker id="arrow-graphite" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 1 2 L 9 5 L 1 8 z" fill="currentColor" />
+      </marker>
+      <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 1 2 L 9 5 L 1 8 z" fill="#B5543C" />
+      </marker>
+    </defs>
+  </svg>
+
+  <!-- Subtle Paper Grain Overlay -->
+  <svg class="paper-grain" aria-hidden="true">
+    <rect width="100%" height="100%" filter="url(#paper-grain-filter)" />
+  </svg>
+
+  <div class="drafting-table">
+    <!-- 1. Top Strip Styled Like a Drawing Title Block -->
+    <header class="title-block-bar">
+      <div class="tb-cell tb-sheet">Sheet 1 of 4</div>
+      <div class="tb-cell tb-brand">Engineering Benches</div>
+      <div class="tb-theme-cell">
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-pressed="false">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+            <circle cx="8" cy="8" r="3.2" />
+            <path d="M8 1.5V3M8 13V14.5M1.5 8H3M13 8H14.5M3.4 3.4L4.5 4.5M11.5 11.5L12.6 12.6M12.6 3.4L11.5 4.5M4.5 11.5L3.4 12.6" />
+          </svg>
+          <span id="theme-toggle-label">Lamplit</span>
+        </button>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <!-- 2. Folio Sheet: Hero + Index of Plates -->
+      <section class="folio-sheet" aria-labelledby="page-title">
+        <div class="folio-inner-frame">
+          <div class="hero" id="hero">
+            <!-- Left Margin: Scale Ruler -->
+            <div class="hero-ruler-margin" aria-hidden="true">
+              <svg class="hero-ruler-svg" viewBox="0 0 36 220">
+                <g class="drawing-art" filter="url(#graphite-rough)" style="color: var(--ink-graphite)">
+                  <rect x="4" y="6" width="26" height="208" class="svg-wash" />
+                  <rect x="4" y="6" width="26" height="208" class="svg-line draw-line" stroke-width="1.2" />
+                  <line x1="10" y1="6" x2="10" y2="214" class="svg-line--muted draw-line" stroke-width="0.7" />
+                  <g class="layer-hatching">
+                    <path d="M18 18 H30 M23 28 H30 M18 38 H30 M23 48 H30 M18 58 H30 M23 68 H30 M18 78 H30 M23 88 H30 M18 98 H30 M23 108 H30 M18 118 H30 M23 128 H30 M18 138 H30 M23 148 H30 M18 158 H30 M23 168 H30 M18 178 H30 M23 188 H30 M18 198 H30" class="svg-line--muted" stroke-width="0.9" />
+                  </g>
+                </g>
+              </svg>
+            </div>
+
+            <!-- Hero Copy -->
+            <div class="hero-copy">
+              <p class="hero-kicker">Studio Folio · Browser-Based Engineering Tools</p>
+              <h1 id="page-title"><span class="ochre-keyword">Engineering benches</span> for structures, processes, controls and circuits</h1>
+              <p class="hero-intro">Four browser-based engineering workbenches arranged as studio plates—select a discipline from the index below or open any plate directly.</p>
+            </div>
+
+            <!-- Right Edge: Compass & Set-Square -->
+            <div class="hero-instruments" aria-hidden="true">
+              <svg viewBox="0 0 260 190">
+                <g class="drawing-art" filter="url(#graphite-rough)" style="color: var(--ink-graphite)">
+                  <!-- Pale Prussian wash behind instruments -->
+                  <ellipse cx="145" cy="96" rx="92" ry="66" class="svg-wash" />
+
+                  <!-- Construction circle & axis lines -->
+                  <g class="layer-construction">
+                    <circle cx="170" cy="112" r="56" class="svg-construction" />
+                    <line x1="102" y1="112" x2="240" y2="112" class="svg-construction" />
+                    <line x1="170" y1="24" x2="170" y2="176" class="svg-construction" />
+                  </g>
+
+                  <!-- Outlines: 45-deg Set-Square & Divider Compass -->
+                  <g class="layer-outlines">
+                    <!-- Set-square -->
+                    <polygon points="22,158 148,158 22,36" class="svg-line draw-line" stroke-width="1.4" />
+                    <polygon points="40,140 106,140 40,76" class="svg-line--muted draw-line" stroke-width="1" />
+                    <!-- Compass -->
+                    <circle cx="170" cy="40" r="7" class="svg-line draw-line" stroke-width="1.4" />
+                    <line x1="170" y1="23" x2="170" y2="33" class="svg-line draw-line" stroke-width="1.5" />
+                    <path d="M165 46 L132 152 L135 162" class="svg-line draw-line" stroke-width="1.5" />
+                    <path d="M175 46 L208 152 L205 162" class="svg-line draw-line" stroke-width="1.5" />
+                    <path d="M148 98 Q170 104 192 98" class="svg-line--muted draw-line" stroke-width="1.1" />
+                  </g>
+
+                  <!-- Hatching on set-square bevel -->
+                  <g class="layer-hatching">
+                    <polygon points="22,158 148,158 22,36" fill="url(#hatch-45)" opacity="0.4" />
+                    <polygon points="40,140 106,140 40,76" fill="var(--bg-paper)" />
+                  </g>
+
+                  <!-- Small red marker & note -->
+                  <g class="layer-notes">
+                    <circle cx="205" cy="162" r="2.2" class="svg-red-fill" />
+                    <text x="190" y="34" class="svg-note-text">r = 56 mm</text>
+                  </g>
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          <!-- 3. Index of Plates -->
+          <nav class="plate-index" id="index" aria-labelledby="index-heading">
+            <div class="index-header">
+              <h2 id="index-heading">Index of Plates</h2>
+              <span class="index-caption">Jump to plate</span>
+            </div>
+            <ol class="index-list">
+              <li>
+                <a class="index-row" href="#plate-1">
+                  <span class="index-num">I</span>
+                  <span class="index-name">Structural Engineering Bench</span>
+                  <span class="index-desc">Structural engineering analysis workbench.</span>
+                  <span class="index-leaders" aria-hidden="true"></span>
+                  <span class="index-plate-ref">Plate I</span>
+                </a>
+              </li>
+              <li>
+                <a class="index-row" href="#plate-2">
+                  <span class="index-num">II</span>
+                  <span class="index-name">Process Engineering Bench</span>
+                  <span class="index-desc">Process engineering calculation workbench.</span>
+                  <span class="index-leaders" aria-hidden="true"></span>
+                  <span class="index-plate-ref">Plate II</span>
+                </a>
+              </li>
+              <li>
+                <a class="index-row" href="#plate-3">
+                  <span class="index-num">III</span>
+                  <span class="index-name">Control Engg Bench</span>
+                  <span class="index-desc">Control systems engineering workbench.</span>
+                  <span class="index-leaders" aria-hidden="true"></span>
+                  <span class="index-plate-ref">Plate III</span>
+                </a>
+              </li>
+              <li>
+                <a class="index-row" href="#plate-4">
+                  <span class="index-num">IV</span>
+                  <span class="index-name">Circuit Bench Lab</span>
+                  <span class="index-desc">Electronic and electrical circuit lab.</span>
+                  <span class="index-leaders" aria-hidden="true"></span>
+                  <span class="index-plate-ref">Plate IV</span>
+                </a>
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </section>
+
+      <!-- 4. Four Plates in a 2x2 Grid -->
+      <section class="plates-grid" aria-label="Engineering Plates">
+        <!-- PLATE I: Structural Engineering Bench -->
+        <article class="plate plate--1" id="plate-1">
+          <span class="corner-tape corner-tape--tl" aria-hidden="true"></span>
+          <span class="corner-tape corner-tape--tr" aria-hidden="true"></span>
+
+          <figure class="plate-figure">
+            <svg class="plate-svg" viewBox="0 0 460 268" aria-hidden="true">
+              <g class="drawing-art" filter="url(#graphite-rough)" style="color: var(--ink-graphite)">
+                <!-- Pale prussian watercolour wash -->
+                <path d="M44 64 Q150 48 260 56 Q370 46 420 72 L416 176 Q250 184 48 172 Z" class="svg-wash" />
+
+                <!-- Construction & dimension lines -->
+                <g class="layer-construction">
+                  <line x1="64" y1="68" x2="64" y2="232" class="svg-construction" />
+                  <line x1="396" y1="68" x2="396" y2="232" class="svg-construction" />
+                  <line x1="34" y1="84" x2="112" y2="84" class="svg-construction" />
+                  <line x1="34" y1="168" x2="112" y2="168" class="svg-construction" />
+                </g>
+
+                <!-- Outlines: Truss Bridge & Supports -->
+                <g class="layer-outlines">
+                  <!-- Deck & Bottom chord -->
+                  <line x1="56" y1="168" x2="404" y2="168" class="svg-line draw-line" stroke-width="2" />
+                  <!-- Top chord -->
+                  <line x1="118" y1="84" x2="342" y2="84" class="svg-line draw-line" stroke-width="1.8" />
+                  <!-- End posts -->
+                  <line x1="64" y1="168" x2="118" y2="84" class="svg-line draw-line" stroke-width="1.8" />
+                  <line x1="396" y1="168" x2="342" y2="84" class="svg-line draw-line" stroke-width="1.8" />
+                  <!-- Verticals -->
+                  <line x1="118" y1="84" x2="118" y2="168" class="svg-line draw-line" stroke-width="1.2" />
+                  <line x1="174" y1="84" x2="174" y2="168" class="svg-line draw-line" stroke-width="1.2" />
+                  <line x1="230" y1="84" x2="230" y2="168" class="svg-line draw-line" stroke-width="1.4" />
+                  <line x1="286" y1="84" x2="286" y2="168" class="svg-line draw-line" stroke-width="1.2" />
+                  <line x1="342" y1="84" x2="342" y2="168" class="svg-line draw-line" stroke-width="1.2" />
+                  <!-- Diagonals (Pratt symmetry) -->
+                  <line x1="118" y1="84" x2="174" y2="168" class="svg-line draw-line" stroke-width="1.4" />
+                  <line x1="174" y1="84" x2="230" y2="168" class="svg-line draw-line" stroke-width="1.4" />
+                  <line x1="342" y1="84" x2="286" y2="168" class="svg-line draw-line" stroke-width="1.4" />
+                  <line x1="286" y1="84" x2="230" y2="168" class="svg-line draw-line" stroke-width="1.4" />
+                  <!-- Pin & Roller supports -->
+                  <polygon points="64,170 50,192 78,192" class="svg-line draw-line" stroke-width="1.4" />
+                  <polygon points="396,170 382,188 410,188" class="svg-line draw-line" stroke-width="1.4" />
+                  <circle cx="388" cy="193" r="3.5" class="svg-line draw-line" stroke-width="1.2" />
+                  <circle cx="404" cy="193" r="3.5" class="svg-line draw-line" stroke-width="1.2" />
+                  <!-- Ground abutments -->
+                  <line x1="36" y1="192" x2="96" y2="192" class="svg-line draw-line" stroke-width="1.5" />
+                  <line x1="364" y1="198" x2="424" y2="198" class="svg-line draw-line" stroke-width="1.5" />
+                  <!-- Gusset rivets -->
+                  <circle cx="118" cy="84" r="2.2" fill="currentColor" />
+                  <circle cx="230" cy="84" r="2.2" fill="currentColor" />
+                  <circle cx="342" cy="84" r="2.2" fill="currentColor" />
+                  <circle cx="230" cy="168" r="2.2" fill="currentColor" />
+                </g>
+
+                <!-- Hatching & stippled shadows -->
+                <g class="layer-hatching">
+                  <rect x="38" y="192" width="56" height="16" fill="url(#hatch-45)" />
+                  <rect x="366" y="198" width="56" height="14" fill="url(#hatch-45)" />
+                  <!-- Hand-hatched truss chord shading -->
+                  <path d="M122 84 L117 90 M130 84 L125 90 M138 84 L133 90 M146 84 L141 90 M222 84 L217 90 M230 84 L225 90 M238 84 L233 90 M322 84 L317 90 M330 84 L325 90 M338 84 L333 90" class="svg-hatch-stroke" />
+                  <rect x="118" y="168" width="224" height="8" fill="url(#stipple-dots)" />
+                </g>
+
+                <!-- Dimension lines, Red-pencil load arrows & margin note -->
+                <g class="layer-notes">
+                  <!-- Span dimension arrow -->
+                  <line x1="66" y1="226" x2="394" y2="226" class="svg-line--muted" stroke-width="0.9" marker-start="url(#arrow-graphite)" marker-end="url(#arrow-graphite)" />
+                  <text x="206" y="242" class="svg-dim-text">L = 24.0 m</text>
+                  <!-- Height dimension arrow -->
+                  <line x1="40" y1="86" x2="40" y2="166" class="svg-line--muted" stroke-width="0.9" marker-start="url(#arrow-graphite)" marker-end="url(#arrow-graphite)" />
+                  <text x="12" y="130" class="svg-dim-text">h</text>
+
+                  <!-- Red-pencil point load arrows -->
+                  <line x1="174" y1="44" x2="174" y2="79" class="svg-red" stroke-width="1.6" marker-end="url(#arrow-red)" />
+                  <line x1="286" y1="44" x2="286" y2="79" class="svg-red" stroke-width="1.6" marker-end="url(#arrow-red)" />
+                  <text x="166" y="38" class="svg-red-text">P1</text>
+                  <text x="278" y="38" class="svg-red-text">P2</text>
+
+                  <!-- Handwritten margin note -->
+                  <text x="334" y="54" class="svg-note-text">check chord axial</text>
+                  <path d="M332 58 Q318 68 308 80" class="svg-line--muted" stroke-width="0.7" />
+                </g>
+
+                <!-- Hover/focus bonus red annotation -->
+                <g class="hover-note">
+                  <text x="188" y="210" class="svg-red-text">ΣFy = 0 · ΣM = 0</text>
+                  <circle cx="230" cy="168" r="6" class="svg-red" stroke-width="1.1" stroke-dasharray="2 2" />
+                </g>
+              </g>
+            </svg>
+          </figure>
+
+          <div class="plate-title-block">
+            <div class="ptb-meta">
+              <span class="ptb-plate-num">Plate I</span>
+              <span class="ptb-scale">Structural Truss Elevation</span>
+            </div>
+            <div class="ptb-body">
+              <h3 class="ptb-title">Structural Engineering Bench</h3>
+              <p class="ptb-desc">Structural engineering analysis workbench.</p>
+            </div>
+            <div class="ptb-action">
+              <a class="btn-bench" href="https://nirmalya-panigrahi.github.io/Structural-Engineering-Bench/" target="_blank" rel="noopener noreferrer">Open the Bench <span aria-hidden="true">→</span></a>
+            </div>
+          </div>
+        </article>
+
+        <!-- PLATE II: Process Engineering Bench -->
+        <article class="plate plate--2" id="plate-2">
+          <svg class="drawn-pin" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="11" r="7" fill="var(--bg-paper)" stroke="var(--ink-graphite)" stroke-width="1.4" />
+            <circle cx="12" cy="11" r="2.6" fill="var(--ink-sepia)" />
+          </svg>
+
+          <figure class="plate-figure">
+            <svg class="plate-svg" viewBox="0 0 460 268" aria-hidden="true">
+              <g class="drawing-art" filter="url(#graphite-rough)" style="color: var(--ink-graphite)">
+                <!-- Pale prussian watercolour wash -->
+                <path d="M126 36 Q236 28 318 42 L322 214 Q220 222 122 210 Z" class="svg-wash" />
+
+                <!-- Construction lines -->
+                <g class="layer-construction">
+                  <line x1="215" y1="18" x2="215" y2="246" class="svg-construction" />
+                  <line x1="154" y1="68" x2="412" y2="68" class="svg-construction" />
+                  <line x1="154" y1="192" x2="412" y2="192" class="svg-construction" />
+                </g>
+
+                <!-- Outlines: Pressure Vessel, Piping, Valves & Gauge -->
+                <g class="layer-outlines">
+                  <!-- Vertical vessel with torispherical heads -->
+                  <path d="M174 72 C174 44, 256 44, 256 72 L256 188 C256 216, 174 216, 174 188 Z" class="svg-line draw-line" stroke-width="1.8" />
+                  <!-- Skirt support -->
+                  <line x1="182" y1="202" x2="176" y2="232" class="svg-line draw-line" stroke-width="1.4" />
+                  <line x1="248" y1="202" x2="254" y2="232" class="svg-line draw-line" stroke-width="1.4" />
+                  <line x1="164" y1="232" x2="266" y2="232" class="svg-line draw-line" stroke-width="1.5" />
+
+                  <!-- Feed pipe (left) + Control Valve symbol -->
+                  <polyline points="38,118 174,118" class="svg-line draw-line" stroke-width="1.5" />
+                  <!-- Bowtie valve -->
+                  <polygon points="94,109 110,118 94,127" class="svg-line draw-line" fill="var(--bg-paper)" stroke-width="1.3" />
+                  <polygon points="126,109 110,118 126,127" class="svg-line draw-line" fill="var(--bg-paper)" stroke-width="1.3" />
+                  <line x1="110" y1="118" x2="110" y2="96" class="svg-line draw-line" stroke-width="1.2" />
+                  <path d="M98 96 C98 86, 122 86, 122 96 Z" class="svg-line draw-line" stroke-width="1.2" />
+
+                  <!-- Overhead vapor line (top) -->
+                  <polyline points="215,50 215,28 386,28 386,102" class="svg-line draw-line" stroke-width="1.5" />
+                  <!-- Condenser coil symbol -->
+                  <circle cx="386" cy="118" r="16" class="svg-line draw-line" stroke-width="1.4" />
+                  <polyline points="374,118 380,110 388,126 396,118" class="svg-line draw-line" stroke-width="1.2" />
+                  <polyline points="386,134 386,174 426,174" class="svg-line draw-line" stroke-width="1.5" />
+
+                  <!-- Bottoms outlet pipe + gate valve -->
+                  <polyline points="215,209 215,222 362,222" class="svg-line draw-line" stroke-width="1.5" />
+                  <polygon points="296,214 310,222 296,230" class="svg-line draw-line" fill="var(--bg-paper)" stroke-width="1.2" />
+                  <polygon points="324,214 310,222 324,230" class="svg-line draw-line" fill="var(--bg-paper)" stroke-width="1.2" />
+
+                  <!-- Sight glass & internal trays -->
+                  <rect x="242" y="106" width="8" height="48" class="svg-line--muted draw-line" stroke-width="1" />
+                  <line x1="176" y1="98" x2="236" y2="98" class="svg-line--muted draw-line" stroke-width="1" stroke-dasharray="6 4" />
+                  <line x1="194" y1="138" x2="254" y2="138" class="svg-line--muted draw-line" stroke-width="1" stroke-dasharray="6 4" />
+                  <line x1="176" y1="168" x2="236" y2="168" class="svg-line--muted draw-line" stroke-width="1" stroke-dasharray="6 4" />
+                </g>
+
+                <!-- Cross-hatching & stippled liquid hold-up -->
+                <g class="layer-hatching">
+                  <path d="M174 168 L256 168 L256 188 C256 216, 174 216, 174 188 Z" fill="url(#hatch-45)" />
+                  <path d="M174 72 C174 52, 192 50, 192 72 L192 188 C192 204, 174 204, 174 188 Z" fill="url(#stipple-dots)" />
+                  <rect x="164" y="232" width="102" height="10" fill="url(#hatch-cross)" />
+                </g>
+
+                <!-- Flow arrows, Red-pencil P/T markers & notes -->
+                <g class="layer-notes">
+                  <line x1="48" y1="118" x2="78" y2="118" class="svg-red" stroke-width="1.5" marker-end="url(#arrow-red)" />
+                  <line x1="336" y1="28" x2="366" y2="28" class="svg-red" stroke-width="1.5" marker-end="url(#arrow-red)" />
+                  <line x1="398" y1="174" x2="424" y2="174" class="svg-red" stroke-width="1.5" marker-end="url(#arrow-red)" />
+                  <line x1="336" y1="222" x2="364" y2="222" class="svg-red" stroke-width="1.5" marker-end="url(#arrow-red)" />
+
+                  <!-- Pressure & Temp instrument circles -->
+                  <circle cx="288" cy="76" r="11" class="svg-red" stroke-width="1.2" />
+                  <line x1="256" y1="76" x2="277" y2="76" class="svg-red" stroke-width="1" />
+                  <text x="282" y="80" class="svg-red-text">P</text>
+
+                  <circle cx="144" cy="152" r="11" class="svg-red" stroke-width="1.2" />
+                  <line x1="155" y1="152" x2="174" y2="152" class="svg-red" stroke-width="1" />
+                  <text x="139" y="156" class="svg-red-text">T</text>
+
+                  <!-- Dimension line on vessel tangent-to-tangent -->
+                  <line x1="406" y1="70" x2="406" y2="190" class="svg-line--muted" stroke-width="0.9" marker-start="url(#arrow-graphite)" marker-end="url(#arrow-graphite)" />
+                  <text x="412" y="134" class="svg-dim-text">H</text>
+
+                  <text x="28" y="60" class="svg-note-text">steady-state mass bal.</text>
+                </g>
+
+                <!-- Hover/focus bonus red annotation -->
+                <g class="hover-note">
+                  <text x="82" y="152" class="svg-red-text">ΔP across valve</text>
+                  <circle cx="110" cy="118" r="20" class="svg-red" stroke-width="1" stroke-dasharray="3 2" />
+                </g>
+              </g>
+            </svg>
+          </figure>
+
+          <div class="plate-title-block">
+            <div class="ptb-meta">
+              <span class="ptb-plate-num">Plate II</span>
+              <span class="ptb-scale">Vessel &amp; Flow Sheet</span>
+            </div>
+            <div class="ptb-body">
+              <h3 class="ptb-title">Process Engineering Bench</h3>
+              <p class="ptb-desc">Process engineering calculation workbench.</p>
+            </div>
+            <div class="ptb-action">
+              <a class="btn-bench" href="https://nirmalya-panigrahi.github.io/Process-Engineering-Bench/" target="_blank" rel="noopener noreferrer">Open the Bench <span aria-hidden="true">→</span></a>
+            </div>
+          </div>
+        </article>
+
+        <!-- PLATE III: Control Engg Bench -->
+        <article class="plate plate--3" id="plate-3">
+          <svg class="drawn-pin" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="11" r="7" fill="var(--bg-paper)" stroke="var(--ink-graphite)" stroke-width="1.4" />
+            <circle cx="12" cy="11" r="2.6" fill="var(--ink-sepia)" />
+          </svg>
+
+          <figure class="plate-figure">
+            <svg class="plate-svg" viewBox="0 0 460 268" aria-hidden="true">
+              <g class="drawing-art" filter="url(#graphite-rough)" style="color: var(--ink-graphite)">
+                <!-- Pale prussian wash behind step response graph -->
+                <rect x="34" y="138" width="234" height="96" class="svg-wash" />
+
+                <!-- Construction grid lines -->
+                <g class="layer-construction">
+                  <line x1="34" y1="168" x2="268" y2="168" class="svg-construction" />
+                  <line x1="364" y1="24" x2="364" y2="236" class="svg-construction" />
+                  <line x1="296" y1="124" x2="432" y2="124" class="svg-construction" />
+                </g>
+
+                <!-- Outlines: Feedback Loop + Response Curve + Flyball Governor -->
+                <g class="layer-outlines">
+                  <!-- Feedback block diagram (top-left) -->
+                  <line x1="22" y1="54" x2="58" y2="54" class="svg-line draw-line" stroke-width="1.4" marker-end="url(#arrow-graphite)" />
+                  <circle cx="70" cy="54" r="10" class="svg-line draw-line" stroke-width="1.4" />
+                  <line x1="80" y1="54" x2="114" y2="54" class="svg-line draw-line" stroke-width="1.4" marker-end="url(#arrow-graphite)" />
+                  <rect x="116" y="36" width="76" height="36" class="svg-line draw-line" stroke-width="1.5" />
+                  <line x1="192" y1="54" x2="262" y2="54" class="svg-line draw-line" stroke-width="1.4" marker-end="url(#arrow-graphite)" />
+                  <!-- Feedback return loop -->
+                  <polyline points="236,54 236,104 180,104" class="svg-line draw-line" stroke-width="1.3" marker-end="url(#arrow-graphite)" />
+                  <rect x="128" y="88" width="50" height="30" class="svg-line draw-line" stroke-width="1.3" />
+                  <polyline points="128,104 70,104 70,66" class="svg-line draw-line" stroke-width="1.3" marker-end="url(#arrow-graphite)" />
+
+                  <!-- Block labels -->
+                  <text x="142" y="59" class="svg-dim-text" style="font-style:normal;font-size:14px">G(s)</text>
+                  <text x="140" y="108" class="svg-dim-text" style="font-style:normal;font-size:13px">H(s)</text>
+                  <text x="20" y="44" class="svg-dim-text">R(s)</text>
+                  <text x="242" y="44" class="svg-dim-text">Y(s)</text>
+                  <text x="53" y="46" class="svg-dim-text" style="font-style:normal">+</text>
+                  <text x="58" y="76" class="svg-dim-text" style="font-style:normal">−</text>
+
+                  <!-- Step response axes & curve (bottom-left) -->
+                  <polyline points="34,142 34,234 270,234" class="svg-line draw-line" stroke-width="1.4" />
+                  <path d="M34 234 C56 232, 68 144, 96 146 C118 148, 122 182, 146 175 C166 168, 176 166, 206 168 L264 168" class="svg-line draw-line" stroke-width="1.8" />
+
+                  <!-- Watt Flyball Governor Sketch (right) -->
+                  <line x1="364" y1="36" x2="364" y2="218" class="svg-line draw-line" stroke-width="2" />
+                  <rect x="346" y="218" width="36" height="14" class="svg-line draw-line" stroke-width="1.4" />
+                  <!-- Top collar -->
+                  <rect x="356" y="50" width="16" height="10" class="svg-line draw-line" stroke-width="1.3" />
+                  <!-- Sliding sleeve -->
+                  <rect x="354" y="148" width="20" height="14" class="svg-line draw-line" stroke-width="1.4" />
+                  <!-- Upper arms to flyballs -->
+                  <line x1="356" y1="56" x2="314" y2="116" class="svg-line draw-line" stroke-width="1.4" />
+                  <line x1="372" y1="56" x2="414" y2="116" class="svg-line draw-line" stroke-width="1.4" />
+                  <!-- Lower links to sleeve -->
+                  <line x1="322" y1="126" x2="354" y2="154" class="svg-line draw-line" stroke-width="1.2" />
+                  <line x1="406" y1="126" x2="374" y2="154" class="svg-line draw-line" stroke-width="1.2" />
+                  <!-- Flyballs -->
+                  <circle cx="310" cy="124" r="14" class="svg-line draw-line" stroke-width="1.6" />
+                  <circle cx="418" cy="124" r="14" class="svg-line draw-line" stroke-width="1.6" />
+                  <!-- Governor throttle linkage -->
+                  <polyline points="374,155 418,155 436,174" class="svg-line draw-line" stroke-width="1.2" />
+                </g>
+
+                <!-- Hatching on flyballs & blocks -->
+                <g class="layer-hatching">
+                  <path d="M298 120 A14 14 0 0 0 322 132 A12 12 0 0 1 298 120 Z" fill="url(#hatch-cross)" />
+                  <path d="M406 120 A14 14 0 0 0 430 132 A12 12 0 0 1 406 120 Z" fill="url(#hatch-cross)" />
+                  <rect x="346" y="218" width="36" height="14" fill="url(#hatch-45)" />
+                </g>
+
+                <!-- Red-pencil overshoot callout & margin notes -->
+                <g class="layer-notes">
+                  <line x1="94" y1="146" x2="94" y2="168" class="svg-red" stroke-width="1.3" />
+                  <circle cx="94" cy="146" r="2.6" class="svg-red-fill" />
+                  <text x="102" y="142" class="svg-red-text">Mp overshoot</text>
+                  <path d="M342 40 Q364 26 386 40" class="svg-red" stroke-width="1.1" marker-end="url(#arrow-red)" />
+                  <text x="386" y="34" class="svg-red-text">ω</text>
+                  <text x="172" y="214" class="svg-note-text">damping ζ ≈ 0.45</text>
+                </g>
+
+                <!-- Hover/focus bonus red annotation -->
+                <g class="hover-note">
+                  <text x="276" y="202" class="svg-red-text">pole placement</text>
+                  <circle cx="70" cy="54" r="15" class="svg-red" stroke-width="1" stroke-dasharray="2 2" />
+                </g>
+              </g>
+            </svg>
+          </figure>
+
+          <div class="plate-title-block">
+            <div class="ptb-meta">
+              <span class="ptb-plate-num">Plate III</span>
+              <span class="ptb-scale">Loop &amp; Governor Study</span>
+            </div>
+            <div class="ptb-body">
+              <h3 class="ptb-title">Control Engg Bench</h3>
+              <p class="ptb-desc">Control systems engineering workbench.</p>
+            </div>
+            <div class="ptb-action">
+              <a class="btn-bench" href="https://nirmalya-panigrahi.github.io/Control-Engg-Bench/" target="_blank" rel="noopener noreferrer">Open the Bench <span aria-hidden="true">→</span></a>
+            </div>
+          </div>
+        </article>
+
+        <!-- PLATE IV: Circuit Bench Lab -->
+        <article class="plate plate--4" id="plate-4">
+          <span class="corner-tape corner-tape--tl" aria-hidden="true"></span>
+          <span class="corner-tape corner-tape--tr" aria-hidden="true"></span>
+
+          <figure class="plate-figure">
+            <svg class="plate-svg" viewBox="0 0 460 268" aria-hidden="true">
+              <g class="drawing-art" filter="url(#graphite-rough)" style="color: var(--ink-graphite)">
+                <!-- Pale prussian wash behind trace window -->
+                <rect x="242" y="134" width="188" height="100" class="svg-wash" />
+
+                <!-- Construction grid -->
+                <g class="layer-construction">
+                  <line x1="242" y1="184" x2="430" y2="184" class="svg-construction" />
+                  <line x1="290" y1="134" x2="290" y2="234" class="svg-construction" />
+                  <line x1="336" y1="134" x2="336" y2="234" class="svg-construction" />
+                  <line x1="382" y1="134" x2="382" y2="234" class="svg-construction" />
+                </g>
+
+                <!-- Outlines: RLC Schematic Loop + Wavy Trace -->
+                <g class="layer-outlines">
+                  <!-- Top rail: Battery -> Resistor -> Inductor -->
+                  <polyline points="54,104 54,54 114,54" class="svg-line draw-line" stroke-width="1.5" />
+                  <!-- Zig-zag resistor -->
+                  <polyline points="114,54 120,44 130,64 140,44 150,64 160,44 168,54" class="svg-line draw-line" stroke-width="1.6" />
+                  <line x1="168" y1="54" x2="210" y2="54" class="svg-line draw-line" stroke-width="1.5" />
+                  <!-- Coiled inductor -->
+                  <path d="M210 54 C210 40, 226 40, 226 54 C226 40, 242 40, 242 54 C242 40, 258 40, 258 54 C258 40, 274 40, 274 54" class="svg-line draw-line" stroke-width="1.6" />
+                  <polyline points="274,54 336,54 336,92" class="svg-line draw-line" stroke-width="1.5" />
+
+                  <!-- Capacitor (right branch) -->
+                  <line x1="316" y1="92" x2="356" y2="92" class="svg-line draw-line" stroke-width="2.1" />
+                  <line x1="316" y1="106" x2="356" y2="106" class="svg-line draw-line" stroke-width="2.1" />
+                  <polyline points="336,106 336,120 202,120" class="svg-line draw-line" stroke-width="1.5" />
+
+                  <!-- Return rail to battery & ground -->
+                  <polyline points="202,120 202,202 54,202 54,132" class="svg-line draw-line" stroke-width="1.5" />
+
+                  <!-- DC Battery symbol (left) -->
+                  <line x1="38" y1="104" x2="70" y2="104" class="svg-line draw-line" stroke-width="2.2" />
+                  <line x1="46" y1="114" x2="62" y2="114" class="svg-line draw-line" stroke-width="1.4" />
+                  <line x1="38" y1="122" x2="70" y2="122" class="svg-line draw-line" stroke-width="2.2" />
+                  <line x1="46" y1="132" x2="62" y2="132" class="svg-line draw-line" stroke-width="1.4" />
+
+                  <!-- Ground symbol -->
+                  <line x1="118" y1="202" x2="118" y2="218" class="svg-line draw-line" stroke-width="1.4" />
+                  <line x1="102" y1="218" x2="134" y2="218" class="svg-line draw-line" stroke-width="1.5" />
+                  <line x1="108" y1="224" x2="128" y2="224" class="svg-line draw-line" stroke-width="1.3" />
+                  <line x1="114" y1="230" x2="122" y2="230" class="svg-line draw-line" stroke-width="1.1" />
+
+                  <!-- Node dots -->
+                  <circle cx="118" cy="202" r="2.6" fill="currentColor" />
+                  <circle cx="336" cy="54" r="2.6" fill="currentColor" />
+
+                  <!-- Component labels -->
+                  <text x="134" y="34" class="svg-dim-text">R</text>
+                  <text x="236" y="34" class="svg-dim-text">L</text>
+                  <text x="364" y="104" class="svg-dim-text">C</text>
+                  <text x="24" y="114" class="svg-dim-text">V</text>
+
+                  <!-- Oscilloscope trace frame & damped sine wave -->
+                  <rect x="242" y="134" width="188" height="100" class="svg-line draw-line" stroke-width="1.2" />
+                  <path d="M244 184 Q258 140, 272 184 T300 184 T328 184 T356 184 T384 184 T412 184 L428 184" class="svg-line draw-line" stroke-width="1.6" />
+                </g>
+
+                <!-- Stipple & Hatching -->
+                <g class="layer-hatching">
+                  <rect x="116" y="54" width="52" height="16" fill="url(#stipple-dots)" />
+                  <rect x="242" y="220" width="188" height="14" fill="url(#hatch-45)" />
+                </g>
+
+                <!-- Red-pencil current arrow, peak marker & margin notes -->
+                <g class="layer-notes">
+                  <line x1="74" y1="42" x2="104" y2="42" class="svg-red" stroke-width="1.5" marker-end="url(#arrow-red)" />
+                  <text x="74" y="34" class="svg-red-text">i(t)</text>
+
+                  <!-- Peak amplitude marker on wave -->
+                  <line x1="258" y1="162" x2="258" y2="184" class="svg-red" stroke-width="1.2" />
+                  <circle cx="258" cy="162" r="2.4" class="svg-red-fill" />
+                  <text x="266" y="156" class="svg-red-text">v(t)</text>
+
+                  <text x="58" y="176" class="svg-note-text">RLC resonance ω0</text>
+                </g>
+
+                <!-- Hover/focus bonus red annotation -->
+                <g class="hover-note">
+                  <text x="352" y="156" class="svg-red-text">V = L di/dt</text>
+                  <circle cx="242" cy="54" r="18" class="svg-red" stroke-width="1" stroke-dasharray="2 2" />
+                </g>
+              </g>
+            </svg>
+          </figure>
+
+          <div class="plate-title-block">
+            <div class="ptb-meta">
+              <span class="ptb-plate-num">Plate IV</span>
+              <span class="ptb-scale">RLC Schematic &amp; Trace</span>
+            </div>
+            <div class="ptb-body">
+              <h3 class="ptb-title">Circuit Bench Lab</h3>
+              <p class="ptb-desc">Electronic and electrical circuit lab.</p>
+            </div>
+            <div class="ptb-action">
+              <a class="btn-bench" href="https://nirmalya-panigrahi.github.io/Circuit-Bench-Lab/" target="_blank" rel="noopener noreferrer">Open the Bench <span aria-hidden="true">→</span></a>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <!-- 5. Footer -->
+    <footer class="folio-footer">
+      <p>Find more tools at: <a href="https://nirmalya-panigrahi.github.io/" target="_blank" rel="noopener noreferrer">https://nirmalya-panigrahi.github.io/</a></p>
+    </footer>
+  </div>
+
+  <!-- Minimal Vanilla JavaScript: Theme Switch + Mechanical Drawing Reveal -->
+  <script>
+    (function () {
+      'use strict';
+
+      // 1. Lamplit Dark / Daylight Parchment theme switch
+      var root = document.documentElement;
+      var toggleBtn = document.getElementById('theme-toggle');
+      var toggleLabel = document.getElementById('theme-toggle-label');
+
+      function syncThemeUI() {
+        var isDark = root.getAttribute('data-theme') === 'dark';
+        if (toggleBtn) {
+          toggleBtn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+        }
+        if (toggleLabel) {
+          toggleLabel.textContent = isDark ? 'Daylight' : 'Lamplit';
+        }
+      }
+
+      syncThemeUI();
+
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', function () {
+          var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          root.setAttribute('data-theme', next);
+          try {
+            localStorage.setItem('benches-theme', next);
+          } catch (e) {
+            // Ignore storage restrictions
+          }
+          syncThemeUI();
+        });
+      }
+
+      // 2. Measure exact stroke lengths for pencil-drawing animation
+      var lines = document.querySelectorAll('.draw-line');
+      for (var i = 0; i < lines.length; i++) {
+        var el = lines[i];
+        if (typeof el.getTotalLength === 'function') {
+          try {
+            var len = Math.ceil(el.getTotalLength()) + 4;
+            el.style.setProperty('--len', String(len));
+          } catch (e) {
+            el.style.setProperty('--len', '360');
+          }
+        }
+      }
+
+      // 3. Respect prefers-reduced-motion
+      var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var hero = document.getElementById('hero');
+      var plates = document.querySelectorAll('.plate');
+
+      function markAllDrawn() {
+        if (hero) hero.classList.add('is-drawn');
+        for (var j = 0; j < plates.length; j++) {
+          plates[j].classList.add('is-drawn');
+        }
+      }
+
+      if (reducedMotion || typeof IntersectionObserver !== 'function') {
+        markAllDrawn();
+        return;
+      }
+
+      // Draw hero instruments on load
+      window.requestAnimationFrame(function () {
+        if (hero) hero.classList.add('is-drawn');
+      });
+
+      // Draw each plate when scrolled into view
+      var observer = new IntersectionObserver(
+        function (entries) {
+          for (var k = 0; k < entries.length; k++) {
+            if (entries[k].isIntersecting) {
+              entries[k].target.classList.add('is-drawn');
+              observer.unobserve(entries[k].target);
+            }
+          }
+        },
+        { threshold: 0.14, rootMargin: '0px 0px -24px 0px' }
+      );
+
+      for (var p = 0; p < plates.length; p++) {
+        observer.observe(plates[p]);
+      }
+
+      // Safety fallback in case a plate is already visible or scrolled past quickly
+      window.setTimeout(function () {
+        for (var q = 0; q < plates.length; q++) {
+          var rect = plates[q].getBoundingClientRect();
+          if (rect.top < window.innerHeight + 80) {
+            plates[q].classList.add('is-drawn');
+            observer.unobserve(plates[q]);
+          }
+        }
+      }, 650);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "name": "Engineering Benches",
+  "description": "Category folio introducing four browser-based engineering workbenches for structural analysis, process calculations, control systems, and electrical circuits.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
